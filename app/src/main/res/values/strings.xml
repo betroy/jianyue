@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">简阅</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">设置</string>
+    <string name="drawer_open">打开</string>
+    <string name="drawer_close">关闭</string>
+    <string name="settings_clean_cache">清除缓存</string>
+    <string name="settings_about">关于</string>
+    <string name="settings_feedback">意见反馈</string>
+    <string name="settings_check_update">检查更新</string>
+    <string name="settings">设置</string>
+    <string-array name="item_title">
+        <item>微信精选</item>
+        <item>图片精选</item>
+        <item>视频精选</item>
+        <item>设&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;置</item>
+    </string-array>
+</resources>

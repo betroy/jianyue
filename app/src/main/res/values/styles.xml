@@ -1,0 +1,21 @@
+<resources>
+
+    <style name="AppThemeFullScreen" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="BaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--状态栏颜色-->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!--ToolBar颜色-->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <!--<item name="android:windowAnimationStyle">@style/WindowAnimationStyle</item>-->
+    </style>
+
+    <style name="WindowAnimationStyle" parent="android:Animation.Activity">
+        <!--<item name="android:activityOpenEnterAnimation"></item>-->
+        <!--<item name="android:activityOpenExitAnimation"></item>-->
+        <!--<item name="android:activityCloseEnterAnimation"></item>-->
+        <!--<item name="android:activityCloseExitAnimation"></item>-->
+    </style>
+</resources>

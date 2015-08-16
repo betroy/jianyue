@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:key="@string/settings_clean_cache"
+        android:title="@string/settings_clean_cache"></Preference>
+    <Preference
+        android:key="@string/settings_feedback"
+        android:title="@string/settings_feedback"></Preference>
+    <Preference
+        android:key="@string/settings_check_update"
+        android:title="@string/settings_check_update"></Preference>
+    <Preference
+        android:key="@string/settings_about"
+        android:title="@string/settings_about"></Preference>
+</PreferenceScreen>

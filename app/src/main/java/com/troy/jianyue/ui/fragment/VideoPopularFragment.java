@@ -4,12 +4,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
@@ -18,6 +21,7 @@ import com.avos.avoscloud.FindCallback;
 import com.troy.jianyue.R;
 import com.troy.jianyue.adapter.VideoAdapter;
 import com.troy.jianyue.bean.Video;
+import com.troy.jianyue.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +29,7 @@ import java.util.List;
 /**
  * Created by chenlongfei on 15/5/8.
  */
-public class VideoPopularFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class VideoPopularFragment extends BaseFragment {
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private VideoAdapter mVideoAdapter;
@@ -44,31 +48,34 @@ public class VideoPopularFragment extends BaseFragment implements SwipeRefreshLa
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_video, null);
+        View rootView = inflater.inflate(R.layout.fragment_video, null);
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView = (RecyclerView) root.findViewById(R.id.vide_recycler_view);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.vide_recycler_view);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mVideoAdapter = new VideoAdapter(getActivity(), mVideoList);
         mRecyclerView.setAdapter(mVideoAdapter);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.video_swipe_refresh_layout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.video_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-        return root;
+        mSwipeRefreshLayout.setProgressViewOffset(false, 0, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, getResources().getDisplayMetrics()));
+        return rootView;
     }
 
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.i("Troy","onActivityCreated");
         loadData();
         addListener();
     }
 
-    private void addListener() {
+    @Override
+    public void addListener() {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -92,14 +99,21 @@ public class VideoPopularFragment extends BaseFragment implements SwipeRefreshLa
         });
     }
 
-    private void loadMoreData() {
-        mSkip=mVideoList.size();
+    @Override
+    public void loadDataForCache() {
+
+    }
+
+    @Override
+    public void loadMoreData() {
+        mSkip = mVideoList.size();
         mIsLoading = true;
         requestServer();
     }
 
-
+    @Override
     public void loadData() {
+        mSwipeRefreshLayout.setRefreshing(true);
         mVideoList.clear();
         requestServer();
     }
@@ -111,12 +125,13 @@ public class VideoPopularFragment extends BaseFragment implements SwipeRefreshLa
         videoAVQuery.findInBackground(new FindCallback<Video>() {
             @Override
             public void done(List<Video> list, AVException e) {
+                mSwipeRefreshLayout.setRefreshing(false);
                 if (e == null) {
                     mVideoList.addAll(list);
                     mVideoAdapter.notifyDataSetChanged();
-                    mIsLoading=false;
+                    mIsLoading = false;
                 } else {
-
+                    ToastUtil.show("数据加载失败...");
                 }
             }
         });
@@ -125,11 +140,11 @@ public class VideoPopularFragment extends BaseFragment implements SwipeRefreshLa
 
     @Override
     public void onRefresh() {
-        new Handler().post(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mSwipeRefreshLayout.setRefreshing(false);
+                loadData();
             }
-        });
+        },1000);
     }
 }

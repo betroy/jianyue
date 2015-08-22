@@ -7,9 +7,11 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
@@ -18,6 +20,7 @@ import com.avos.avoscloud.FindCallback;
 import com.troy.jianyue.R;
 import com.troy.jianyue.adapter.PictureAdapter;
 import com.troy.jianyue.bean.Picture;
+import com.troy.jianyue.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +28,7 @@ import java.util.List;
 /**
  * Created by chenlongfei on 15/5/8.
  */
-public class PicturePopularFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class PicturePopularFragment extends BaseFragment {
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private PictureAdapter mPictureAdapter;
@@ -44,19 +47,21 @@ public class PicturePopularFragment extends BaseFragment implements SwipeRefresh
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_picture, null);
+        View rootView = inflater.inflate(R.layout.fragment_picture, null);
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mPictureAdapter = new PictureAdapter(getActivity(), mPictureList);
-        mRecyclerView = (RecyclerView) root.findViewById(R.id.picture_recycler_view);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.picture_recycler_view);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mPictureAdapter);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.picture_swiperefresh_layout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.picture_swiperefresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-        return root;
+        mSwipeRefreshLayout.setProgressViewOffset(false, 0, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics()));
+        return rootView;
     }
 
 
@@ -67,10 +72,53 @@ public class PicturePopularFragment extends BaseFragment implements SwipeRefresh
         addListener();
     }
 
-    private void addListener() {
+    @Override
+    public void loadData() {
+        mSwipeRefreshLayout.setRefreshing(true);
+        mPictureList.clear();
+        requestServer();
+    }
+
+    @Override
+    public void loadMoreData() {
+        mSkip = mPictureList.size();
+        mIsLoading = true;
+        requestServer();
+    }
+
+    @Override
+    public void loadDataForCache() {
+
+    }
+
+    private void requestServer() {
+        AVQuery<Picture> pictureAVQuery = AVObject.getQuery(Picture.class);
+        pictureAVQuery.setLimit(LIMIT);
+        pictureAVQuery.setSkip(mSkip);
+        pictureAVQuery.orderByDescending("createdAt");
+        pictureAVQuery.findInBackground(new FindCallback<Picture>() {
+            @Override
+            public void done(List<Picture> list, AVException e) {
+                mSwipeRefreshLayout.setRefreshing(false);
+                mIsLoading = false;
+                if (e == null) {
+                    mPictureList.addAll(list);
+                    mPictureAdapter.notifyDataSetChanged();
+                } else {
+                    ToastUtil.show("数据加载失败");
+                }
+            }
+
+        });
+    }
+
+
+    @Override
+    public void addListener() {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
                 int firstVisibleItemPosition = mLinearLayoutManager.findFirstVisibleItemPosition();
                 int lastVisibleItemPosition = mLinearLayoutManager.findLastVisibleItemPosition();
                 int totalItem = mLinearLayoutManager.getItemCount();
@@ -80,7 +128,6 @@ public class PicturePopularFragment extends BaseFragment implements SwipeRefresh
                         loadMoreData();
                     }
                 }
-                super.onScrolled(recyclerView, dx, dy);
             }
 
             @Override
@@ -95,39 +142,8 @@ public class PicturePopularFragment extends BaseFragment implements SwipeRefresh
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mSwipeRefreshLayout.setRefreshing(false);
+                loadData();
             }
         }, 1000);
-    }
-
-    private void loadData() {
-        mPictureList.clear();
-        requestServer();
-    }
-
-    private void loadMoreData() {
-        mSkip = mPictureList.size();
-        mIsLoading=true;
-        requestServer();
-    }
-
-    private void requestServer() {
-        AVQuery<Picture> pictureAVQuery = AVObject.getQuery(Picture.class);
-        pictureAVQuery.setLimit(LIMIT);
-        pictureAVQuery.setSkip(mSkip);
-        pictureAVQuery.orderByDescending("createdAt");
-        pictureAVQuery.findInBackground(new FindCallback<Picture>() {
-            @Override
-            public void done(List<Picture> list, AVException e) {
-                if (e == null) {
-                    mPictureList.addAll(list);
-                    mPictureAdapter.notifyDataSetChanged();
-                    mIsLoading=false;
-                } else {
-
-                }
-            }
-
-        });
     }
 }

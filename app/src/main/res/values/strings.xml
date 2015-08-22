@@ -9,6 +9,7 @@
     <string name="settings_feedback">意见反馈</string>
     <string name="settings_check_update">检查更新</string>
     <string name="settings">设置</string>
+    <string name="menu_refresh">刷新</string>
     <string-array name="item_title">
         <item>微信精选</item>
         <item>图片精选</item>

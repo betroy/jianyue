@@ -28,6 +28,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:text="title"
+                    android:textColor="@android:color/black"
                     android:textSize="18sp" />
 
                 <TextView
@@ -35,7 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="bottom"
-                    android:layout_below="@id/title"
+                    android:layout_below="@id/adapter_weixin_title"
                     android:textColor="@android:color/darker_gray"
                     android:text="source" />
             </RelativeLayout>

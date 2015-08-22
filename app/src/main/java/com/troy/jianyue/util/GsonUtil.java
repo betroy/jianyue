@@ -47,6 +47,30 @@ public class GsonUtil {
         return resultJson;
     }
 
+    public static int getErrorCode(String json) {
+        JSONObject jsonObject = null;
+        int errorCode = -1;
+        try {
+            jsonObject = new JSONObject(json);
+            errorCode = jsonObject.getInt("error_code");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return errorCode;
+    }
+
+    public static String getReason(String json) {
+        JSONObject jsonObject = null;
+        String reason = "";
+        try {
+            jsonObject = new JSONObject(json);
+            reason = jsonObject.getString("reason");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return reason;
+    }
+
     //总页数
     public static int getTotalPage() {
         return mResultTotalPage;
@@ -58,11 +82,11 @@ public class GsonUtil {
     }
 
     public static void setTotalPage(int totalPage) {
-        GsonUtil.mResultTotalPage=totalPage;
+        mResultTotalPage = totalPage;
     }
 
     public static void setPno(int pno) {
-        GsonUtil.mResultPno=pno;
+        mResultPno = pno;
     }
 
 }

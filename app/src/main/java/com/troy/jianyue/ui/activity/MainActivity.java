@@ -17,19 +17,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.FindCallback;
-import com.baidu.cyberplayer.utils.T;
 import com.troy.jianyue.R;
 import com.troy.jianyue.adapter.DrawerLayoutAdapter;
 import com.troy.jianyue.bean.MenuItem;
-import com.troy.jianyue.service.DownLoadService;
 import com.troy.jianyue.ui.fragment.PicturePopularFragment;
 import com.troy.jianyue.ui.fragment.VideoPopularFragment;
 import com.troy.jianyue.ui.fragment.WeiXinPopularFragment;
-import com.troy.jianyue.util.CommonUtil;
 import com.troy.jianyue.util.ToastUtil;
 
 import java.util.ArrayList;
@@ -163,20 +156,19 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        android.view.MenuItem menuItem = menu.findItem(R.id.action_settings);
-        Drawable d = getResources().getDrawable(R.drawable.abc_ic_menu_moreoverflow_mtrl_alpha);
-        menuItem.setIcon(d);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        android.view.MenuItem menuItem = menu.findItem(R.id.action_settings);
+//        Drawable d = getResources().getDrawable(R.drawable.abc_ic_menu_moreoverflow_mtrl_alpha);
+//        menuItem.setIcon(d);
+//        return true;
+//    }
 
-    @Override
-    public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
-
+//    @Override
+//    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     public void onBackPressed() {

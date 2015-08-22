@@ -9,6 +9,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -26,7 +30,7 @@ import java.util.TimerTask;
 /**
  * Created by chenlongfei on 15/5/16.
  */
-public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> implements BVideoView.OnCompletionListener, BVideoView.OnPreparedListener, BVideoView.OnErrorListener {
+public class VideoAdapter extends RecyclerViewBaseAdapter<VideoAdapter.ViewHolder> implements BVideoView.OnCompletionListener, BVideoView.OnPreparedListener, BVideoView.OnErrorListener {
     private Context mContext;
     private List<Video> mVideoList;
     private static final String AK = "EpSSwLhuvrMBwPDzd0GYo3LG";
@@ -37,10 +41,13 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
     private Timer mTimer;
     private UpDateProgressHandler mUpDateProgressHandler;
     private static final int VIEW_TYPE_FOODER = -1;
+    private int mLastItemCount;
+    private int mLastPosition = -1;
 
     public VideoAdapter(Context context, List<Video> list) {
         this.mContext = context;
         this.mVideoList = list;
+        mLastItemCount = mVideoList.size();
     }
 
     @Override
@@ -56,13 +63,30 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(VideoAdapter.ViewHolder holder, int position) {
-        if (position != mVideoList.size()) {
-            initPlayer(holder, position);
-            addLisener(holder);
-        }
+    public void onViewDetachedFromWindow(ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        holder.itemView.clearAnimation();
     }
 
+    @Override
+    public void onBindViewHolder(VideoAdapter.ViewHolder holder, int position) {
+        if (position < mVideoList.size()) {
+            initPlayer(holder, position);
+            addLisener(holder);
+        } else {
+            //数据全部加载完毕，提示”没有更多了...”,否则提示"正在加载..."
+            if (mLastItemCount == mVideoList.size()) {
+                holder.mLoadMore.setText("没有更多了...");
+            } else {
+                holder.mLoadMore.setText("正在加载...");
+            }
+            mLastItemCount = mVideoList.size();
+        }
+        if (position > mLastPosition) {
+            startAnimation(holder.itemView);
+            mLastPosition = position;
+        }
+    }
 
     @Override
     public int getItemViewType(int position) {
@@ -74,7 +98,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return mVideoList.size() + 1;
+        return mVideoList.size() > 0 ? mVideoList.size() + 1 : mVideoList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -85,6 +109,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
         protected TextView mTotalTime;
         protected SeekBar mSeekBar;
         protected RelativeLayout mMediaController;
+        protected TextView mLoadMore;
 
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
@@ -96,6 +121,8 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
                 mCurrentTime = (TextView) itemView.findViewById(R.id.adapter_video_time_current);
                 mSeekBar = (SeekBar) itemView.findViewById(R.id.adapter_video_seekbar);
                 mMediaController = (RelativeLayout) itemView.findViewById(R.id.adapter_video_media_controller);
+            } else {
+                mLoadMore = (TextView) itemView.findViewById(R.id.adapter_loadmore);
             }
         }
     }

@@ -9,10 +9,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -30,7 +26,7 @@ import java.util.TimerTask;
 /**
  * Created by chenlongfei on 15/5/16.
  */
-public class VideoAdapter extends RecyclerViewBaseAdapter<VideoAdapter.ViewHolder> implements BVideoView.OnCompletionListener, BVideoView.OnPreparedListener, BVideoView.OnErrorListener {
+public class VideoAdapter extends BaseAdapterRecyclerView<VideoAdapter.ViewHolder> implements BVideoView.OnCompletionListener, BVideoView.OnPreparedListener, BVideoView.OnErrorListener {
     private Context mContext;
     private List<Video> mVideoList;
     private static final String AK = "EpSSwLhuvrMBwPDzd0GYo3LG";

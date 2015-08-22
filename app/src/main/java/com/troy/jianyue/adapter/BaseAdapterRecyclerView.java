@@ -13,7 +13,7 @@ import com.baidu.cyberplayer.utils.T;
 /**
  * Created by chenlongfei on 15/8/22.
  */
-public class RecyclerViewBaseAdapter<T extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<T> implements View.OnClickListener {
+public class BaseAdapterRecyclerView<T extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<T> implements View.OnClickListener {
 
     @Override
     public T onCreateViewHolder(ViewGroup parent, int viewType) {

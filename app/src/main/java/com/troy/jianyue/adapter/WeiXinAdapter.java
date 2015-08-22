@@ -1,16 +1,10 @@
 package com.troy.jianyue.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,7 +17,7 @@ import java.util.List;
 /**
  * Created by chenlongfei on 15/5/10.
  */
-public class WeiXinAdapter extends RecyclerViewBaseAdapter<WeiXinAdapter.ViewHolder> {
+public class WeiXinAdapter extends BaseAdapterRecyclerView<WeiXinAdapter.ViewHolder> {
     private Context mContext;
     private List<WeiXin> mWeiXinList;
     private OnItemClickListener mOnItemClickListener;

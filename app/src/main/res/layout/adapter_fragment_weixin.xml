@@ -25,8 +25,9 @@
                 <TextView
                     android:id="@+id/adapter_weixin_title"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_alignParentTop="true"
+                    android:ellipsize="end"
                     android:text="title"
                     android:textColor="@android:color/black"
                     android:textSize="18sp" />
@@ -34,7 +35,7 @@
                 <TextView
                     android:id="@+id/adapter_weixin_source"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="20dp"
                     android:gravity="bottom"
                     android:layout_below="@id/adapter_weixin_title"
                     android:textColor="@android:color/darker_gray"

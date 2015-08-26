@@ -111,6 +111,7 @@ public class MainActivity extends BaseActivity {
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 mDrawerOpened = false;
+                mListView.setItemChecked(mCurrentItemId,true);
                 if (mCurrentItemId < 3)
                     mToolbar.setTitle(mTitles[mCurrentItemId]);
             }
@@ -128,7 +129,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void switchFragment(Fragment fragment) {
-        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction().setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.content, fragment);
         fragmentTransaction.commit();
     }
@@ -165,10 +166,6 @@ public class MainActivity extends BaseActivity {
 //        return true;
 //    }
 
-//    @Override
-//    public boolean onOptionsItemSelected(android.view.MenuItem item) {
-//        return super.onOptionsItemSelected(item);
-//    }
 
     @Override
     public void onBackPressed() {

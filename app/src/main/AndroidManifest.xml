@@ -14,12 +14,13 @@
     <application
         android:name=".base.App"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon"
         android:label="@string/app_name"
         android:theme="@style/BaseTheme">
         <meta-data
             android:name="com.thinkland.juheapi.openid"
             android:value="JH324e273c4e2b6e22decbe7bb478088d3" />
+
         <activity
             android:name=".ui.activity.SplashActivity"
             android:screenOrientation="portrait"
@@ -38,6 +39,9 @@
             android:screenOrientation="portrait"></activity>
         <activity
             android:name=".ui.activity.WeiXinDetailActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".ui.activity.VideoDetailActivity"
             android:screenOrientation="portrait"></activity>
         <activity
             android:name="com.avos.avoscloud.feedback.ThreadActivity"

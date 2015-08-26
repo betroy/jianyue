@@ -42,6 +42,7 @@ public class VideoPopularFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState==null)
         mActionBar.setTitle(mTitles[2]);
     }
 
@@ -62,7 +63,6 @@ public class VideoPopularFragment extends BaseFragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-        mSwipeRefreshLayout.setProgressViewOffset(false, 0, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, getResources().getDisplayMetrics()));
         return rootView;
     }
 
@@ -91,8 +91,6 @@ public class VideoPopularFragment extends BaseFragment {
                 if (dy > 0) {
                     if (lastVisibleItemPosition == mVideoList.size() && mIsLoading) {
                         loadMoreData();
-                        Log.i("Troy", "加载更多");
-
                     }
                 }
             }
@@ -113,7 +111,12 @@ public class VideoPopularFragment extends BaseFragment {
 
     @Override
     public void loadData() {
-        mSwipeRefreshLayout.setRefreshing(true);
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
         mVideoList.clear();
         requestServer();
     }
@@ -122,14 +125,15 @@ public class VideoPopularFragment extends BaseFragment {
         AVQuery<Video> videoAVQuery = AVObject.getQuery(Video.class);
         videoAVQuery.setLimit(LIMIT);
         videoAVQuery.setSkip(mSkip);
+        videoAVQuery.orderByDescending("createdAt");
         videoAVQuery.findInBackground(new FindCallback<Video>() {
             @Override
             public void done(List<Video> list, AVException e) {
                 mSwipeRefreshLayout.setRefreshing(false);
+                mIsLoading = false;
                 if (e == null) {
                     mVideoList.addAll(list);
                     mVideoAdapter.notifyDataSetChanged();
-                    mIsLoading = false;
                 } else {
                     ToastUtil.show("数据加载失败...");
                 }
@@ -145,6 +149,6 @@ public class VideoPopularFragment extends BaseFragment {
             public void run() {
                 loadData();
             }
-        },1000);
+        }, 1000);
     }
 }

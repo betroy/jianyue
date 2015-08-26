@@ -41,6 +41,7 @@ public class PicturePopularFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState==null)
         mActionBar.setTitle(mTitles[1]);
     }
 
@@ -60,7 +61,6 @@ public class PicturePopularFragment extends BaseFragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-        mSwipeRefreshLayout.setProgressViewOffset(false, 0, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics()));
         return rootView;
     }
 
@@ -74,7 +74,12 @@ public class PicturePopularFragment extends BaseFragment {
 
     @Override
     public void loadData() {
-        mSwipeRefreshLayout.setRefreshing(true);
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
         mPictureList.clear();
         requestServer();
     }
@@ -124,7 +129,6 @@ public class PicturePopularFragment extends BaseFragment {
                 int totalItem = mLinearLayoutManager.getItemCount();
                 if (dy > 0) {
                     if (lastVisibleItemPosition == mPictureList.size() && !mIsLoading) {
-                        Log.i("Troy", "加载更多");
                         loadMoreData();
                     }
                 }

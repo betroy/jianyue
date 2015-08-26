@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
+import com.baidu.cyberplayer.core.BVideoView;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -24,6 +25,8 @@ public class App extends Application {
     public static Context mContext;
     public static final String APP_ID = "xlzayidaofty5p17cezdowdm8mj00sk4akdh3o6n0rh8axkv";
     public static final String APP_KEY = "opn407132fwi7x6vodnpu4h460e64rbkgt2qi930jbyqrxvp";
+    private static final String AK = "EpSSwLhuvrMBwPDzd0GYo3LG";
+    private static final String SK = "L9KrmivPef4DocCh";
 
     @Override
     public void onCreate() {
@@ -34,6 +37,7 @@ public class App extends Application {
         AVObject.registerSubclass(Video.class);
         AVOSCloud.initialize(this, APP_ID, APP_KEY);
         JuheSDKInitializer.initialize(getApplicationContext());
+        BVideoView.setAKSK(AK, SK);
     }
 
     private void initImageLoad() {

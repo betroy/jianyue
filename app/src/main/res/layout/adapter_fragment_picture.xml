@@ -24,7 +24,8 @@
             <TextView
                 android:id="@+id/adapter_picture_summary"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </RelativeLayout>

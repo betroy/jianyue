@@ -8,14 +8,19 @@ import com.avos.avoscloud.AVObject;
  */
 @AVClassName("Video")
 public class Video extends AVObject {
-    private String url;
+    private String videoUrl;
     private String summary;
+    private String thumbnails;
 
-    public String getUrl() {
-        return getString("url");
+    public String getVideoUrl() {
+        return getString("videoUrl");
     }
 
     public String getSummary() {
         return getString("summary");
+    }
+
+    public String getThumbnailsUrl() {
+        return getAVFile("thumbnails").getUrl();
     }
 }

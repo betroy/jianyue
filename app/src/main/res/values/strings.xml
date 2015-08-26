@@ -12,7 +12,7 @@
     <string name="menu_refresh">刷新</string>
     <string-array name="item_title">
         <item>微信精选</item>
-        <item>图片精选</item>
+        <item>图文精选</item>
         <item>视频精选</item>
         <item>设&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;置</item>
     </string-array>

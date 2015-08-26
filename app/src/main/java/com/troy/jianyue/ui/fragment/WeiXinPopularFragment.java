@@ -12,6 +12,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import com.thinkland.sdk.android.DataCallBack;
 import com.thinkland.sdk.android.JuheData;
@@ -45,7 +46,8 @@ public class WeiXinPopularFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mActionBar.setTitle(mTitles[0]);
+        if (savedInstanceState == null)
+            mActionBar.setTitle(mTitles[0]);
     }
 
     @Nullable
@@ -62,7 +64,6 @@ public class WeiXinPopularFragment extends BaseFragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-        mSwipeRefreshLayout.setProgressViewOffset(false, 0, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics()));
         mWeiXinAdapter = new WeiXinAdapter(getActivity(), mListWeiXin);
         mRecyclerView.setAdapter(mWeiXinAdapter);
 
@@ -78,9 +79,14 @@ public class WeiXinPopularFragment extends BaseFragment {
 
     @Override
     public void loadData() {
-        mSwipeRefreshLayout.setRefreshing(true);
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
         mListWeiXin.clear();
-//        requestServer(URL, PNO, PS);
+        requestServer(URL, PNO, PS);
     }
 
     @Override
@@ -88,7 +94,7 @@ public class WeiXinPopularFragment extends BaseFragment {
         int pno = GsonUtil.getPno();
         int totalPage = GsonUtil.getTotalPage();
         if (pno < totalPage) {
-//            requestServer(URL, ++pno, PS);
+            requestServer(URL, ++pno, PS);
         }
         mIsLoading = true;
     }
@@ -140,7 +146,6 @@ public class WeiXinPopularFragment extends BaseFragment {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-//                Log.i("Troy", "onScrollStateChanged:" + newState);
             }
 
             @Override
@@ -152,7 +157,6 @@ public class WeiXinPopularFragment extends BaseFragment {
 //                Log.i("Troy", String.format("lastPosition:%1$d,totalItem:%2$d,firstPosition:%3$d", lastVisiblePosition, totalItem, firstVisiblePosition));
                 if (dy > 0) {
                     if (lastVisiblePosition == mListWeiXin.size() && !mIsLoading) {
-                        Log.i("Troy", "加载更多");
                         loadMoreData();
                     }
                 }

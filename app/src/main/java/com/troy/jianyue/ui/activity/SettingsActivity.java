@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -29,6 +30,7 @@ import com.troy.jianyue.util.CommonUtil;
 import com.troy.jianyue.util.ToastUtil;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -126,7 +128,8 @@ public class SettingsActivity extends BaseActivity {
             mAboutPreference.setOnPreferenceClickListener(this);
             mFeedbackPreference.setOnPreferenceClickListener(this);
             mCheckUpdatePreference.setOnPreferenceClickListener(this);
-            mCleanCachePreference.setSummary(String.format("缓存大小:%1$dMB", getCacheSize()));
+            DecimalFormat decimalFormat=new DecimalFormat("#0.00");
+            mCleanCachePreference.setSummary("缓存大小:"+decimalFormat.format(getCacheSize())+"MB");
         }
 
         @Override
@@ -150,19 +153,27 @@ public class SettingsActivity extends BaseActivity {
             agent.startDefaultThreadActivity();
         }
 
-        private long getCacheSize() {
+        private double getCacheSize() {
             File cacheFile = ImageLoader.getInstance().getDiskCache().getDirectory();
-            long bytes = cacheFile.length();
-            long mb = bytes / 1024 / 1020;
-            return mb;
+            long bytesCount = 0;
+            if (cacheFile.exists()) {
+                if (cacheFile.isDirectory()) {
+                    File[] files = cacheFile.listFiles();
+                    for (File file : files) {
+                        bytesCount += file.length();
+                    }
+                } else {
+                    bytesCount = cacheFile.length();
+                }
+            }
+            double cacheSize = (double)bytesCount / 1024 / 1024;
+            return cacheSize;
         }
 
         private void cleanCache() {
-            File cacheFile = ImageLoader.getInstance().getDiskCache().getDirectory();
-            if (cacheFile.exists()) {
-                cacheFile.delete();
-            }
-            mCleanCachePreference.setSummary(String.format("缓存大小:%1$dMB", getCacheSize()));
+            ImageLoader.getInstance().clearDiskCache();
+            mCleanCachePreference.setSummary("缓存大小:0.00MB");
+            ToastUtil.show("缓存已清除");
         }
 
         private void checkVersion() {

@@ -77,7 +77,7 @@ public class DownLoadApkService extends Service {
     private void createNotification() {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setSmallIcon(R.mipmap.icon);
         builder.setContentTitle(getResources().getString(R.string.app_name));
         builder.setContentText("下载中...");
         builder.setProgress(100, 50, false);

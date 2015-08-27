@@ -1,6 +1,9 @@
 ## 简阅
 基于Material Design风格的一款应用，包含微信精选，图文浏览，热门视频三个模块。   
-此项目纯属练习之作，如有不足，也请多多指教。
+此项目纯属练习之作，如有不足，也请多多指教。    
+![image](/screenshots/weixin.png =240x400)![image](/screenshots/picture.png =240x400)    
+![image](/screenshots/video.png =240x400)![image](/screenshots/setting.png =240x400)
+
 ##功能介绍
 ###微信精选
 *	精选当日热门微信公众号文章，数据来源于[聚合数据](http://www.juhe.cn/)。

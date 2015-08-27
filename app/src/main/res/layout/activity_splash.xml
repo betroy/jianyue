@@ -2,13 +2,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/green">
-<TextView
-    android:id="@+id/activity_splash_version"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
-    android:gravity="center"
-    android:text="version"/>
+    android:background="@mipmap/splash_activity_background">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:text="@string/app_name"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="50sp"/>
+
+    <TextView
+        android:id="@+id/activity_splash_version"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:text="version" />
 </RelativeLayout>

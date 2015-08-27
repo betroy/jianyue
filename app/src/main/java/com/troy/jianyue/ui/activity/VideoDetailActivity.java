@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -20,9 +21,11 @@ import java.util.Locale;
  * Created by chenlongfei on 15/8/26.
  */
 public class VideoDetailActivity extends BaseActivity {
-    private Handler handler = new Handler();
     private static final int UPDATE_TIME_PROGRESS_MESSAGE = 0;
-    private UpDateProgressHandler mUpDateProgressHandler;
+    private static final int UPDATE_UI_MPROGRESSCONTROLLER_VISIBLE = 1;
+    private static final int UPDATE_UI_MPROGRESSCONTROLLER_GONE_DELAY = 2;
+    private UpDateProgressHandler mUpDateProgressHandler = new UpDateProgressHandler();
+    private UpDateUIHandler mUpDateUIHandler = new UpDateUIHandler();
     private BVideoView mBVideoView;
     private Button mPlayOrPause;
     private Button mFullscreenOnOrOff;
@@ -30,6 +33,7 @@ public class VideoDetailActivity extends BaseActivity {
     private TextView mCurrentTime;
     private TextView mTotalTime;
     private LinearLayout mProgressController;
+    private RelativeLayout mRelativeLayout;
     private PLAY_STATE mPlayState = PLAY_STATE.NONE;
     private String mVideoUrl;
 
@@ -40,17 +44,20 @@ public class VideoDetailActivity extends BaseActivity {
         mVideoUrl = getIntent().getExtras().getString("url");
         initViews();
         setupPlayer();
+        addListener();
     }
 
     @Override
     protected void initViews() {
         mBVideoView = (BVideoView) findViewById(R.id.activity_video_detail_videoview);
         mPlayOrPause = (Button) findViewById(R.id.activity_video_detail_btn_play);
+        mPlayOrPause.setBackgroundResource(R.drawable.btn_pause_select);
         mFullscreenOnOrOff = (Button) findViewById(R.id.activity_video_detail_btn_fullscreen_on);
         mSeekBar = (SeekBar) findViewById(R.id.activity_video_detail_seekbar);
         mCurrentTime = (TextView) findViewById(R.id.activity_video_detail_time_current);
         mTotalTime = (TextView) findViewById(R.id.activity_video_detail_time_total);
         mProgressController = (LinearLayout) findViewById(R.id.activity_video_detail_progress_control);
+        mRelativeLayout = (RelativeLayout) findViewById(R.id.activity_video_detail_media_controller);
     }
 
     @Override
@@ -63,7 +70,6 @@ public class VideoDetailActivity extends BaseActivity {
         mBVideoView.setVideoScalingMode(BVideoView.VIDEO_SCALING_MODE_SCALE_TO_FIT);
         mBVideoView.seekTo(0);
         mBVideoView.start();
-        mUpDateProgressHandler = new UpDateProgressHandler();
     }
 
     public void addListener() {
@@ -129,8 +135,8 @@ public class VideoDetailActivity extends BaseActivity {
                 case UPDATE_TIME_PROGRESS_MESSAGE:
                     int currentTime = mBVideoView.getCurrentPosition();
                     int totalTime = mBVideoView.getDuration();
-//                    Log.i("Troy", "totalTime:" + totalTime);
-//                    Log.i("Troy", "currentTime:" + currentTime);
+                    Log.i("Troy", "totalTime:" + totalTime);
+                    Log.i("Troy", "currentTime:" + currentTime);
                     mSeekBar.setMax(totalTime);
                     mSeekBar.setProgress(currentTime);
                     updateTextView(currentTime, totalTime);
@@ -141,10 +147,30 @@ public class VideoDetailActivity extends BaseActivity {
         }
     }
 
+    public class UpDateUIHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case UPDATE_UI_MPROGRESSCONTROLLER_VISIBLE:
+                    mProgressController.setVisibility(View.VISIBLE);
+                    break;
+                case UPDATE_UI_MPROGRESSCONTROLLER_GONE_DELAY:
+                    mProgressController.setVisibility(View.GONE);
+                    break;
+            }
+        }
+    }
+
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.activity_video_detail_btn_play:
+                    playOrPauseVideo();
+                    break;
 
+            }
         }
     };
 
@@ -191,6 +217,8 @@ public class VideoDetailActivity extends BaseActivity {
         @Override
         public void onPrepared() {
             Log.i("Troy", "onPrepared");
+            mUpDateUIHandler.sendEmptyMessage(UPDATE_UI_MPROGRESSCONTROLLER_VISIBLE);
+            mUpDateUIHandler.sendEmptyMessageDelayed(UPDATE_UI_MPROGRESSCONTROLLER_GONE_DELAY, 3000);
             mUpDateProgressHandler.sendEmptyMessage(UPDATE_TIME_PROGRESS_MESSAGE);
         }
     }
@@ -243,5 +271,13 @@ public class VideoDetailActivity extends BaseActivity {
 
     public static enum PLAY_STATE {
         NONE, PAUSE, PLAY
+    }
+
+    @Override
+    protected void onDestroy() {
+        mUpDateUIHandler.removeMessages(UPDATE_UI_MPROGRESSCONTROLLER_VISIBLE);
+        mUpDateUIHandler.removeMessages(UPDATE_UI_MPROGRESSCONTROLLER_GONE_DELAY);
+        mUpDateProgressHandler.removeMessages(UPDATE_TIME_PROGRESS_MESSAGE);
+        super.onDestroy();
     }
 }

@@ -1,8 +1,8 @@
 ## 简阅
 基于Material Design风格的一款应用，包含微信精选，图文浏览，热门视频三个模块。   
 此项目纯属练习之作，如有不足，也请多多指教。    
-<img src="/screenshots/weixin.png" width="240" height="400"/> <img src="/screenshots/picture.png" width="240" height="400"/>
-<img src="/screenshots/video.png" width="240" height="400"/> <img src="/screenshots/setting.png" width="240" height="400"/>
+<img src="screenshots/weixin.png" width="240" height="400"/> <img src="screenshots/picture.png" width="240" height="400"/>
+<img src="screenshots/video.png" width="240" height="400"/> <img src="screenshots/setting.png" width="240" height="400"/>
 ##功能介绍
 ###微信精选
 *	精选当日热门微信公众号文章，数据来源于[聚合数据](http://www.juhe.cn/)。
@@ -14,7 +14,7 @@
 
 ###视频精选
 *	精选热门视频，数据来源于网络。
-*	使用[七牛](http://www.qiniu.com)存储视频数据。
+*	使用[Baidu-T5Player](http://developer.baidu.com/wiki/index.php?title=docs/cplat/media/video/sdk)播放器
 
 ##感谢以下开源项目
 *	[material-dialogs](https://github.com/afollestad/material-dialogs)
@@ -26,3 +26,4 @@
 ##关于我
 *	**QQ:**421575839
 *	**博客:**[http://www.chenlongfei.cn](http://www.chenlongfei.cn)
+

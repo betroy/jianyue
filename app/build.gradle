@@ -31,6 +31,7 @@ android {
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
+            java.srcDirs= ['src/main/java', 'src/main/java-gen']
         }
     }
 }
@@ -43,6 +44,8 @@ dependencies {
     compile 'com.afollestad:material-dialogs:0.7.8.1'
     compile 'com.squareup.okhttp:okhttp:2.3.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
+    //green dao
+    compile 'de.greenrobot:greendao:2.0.0'
     compile files('libs/gson-2.3.1.jar')
     //LeanCloud
     //avoscloud-sdk 为 LeanCloud基础包

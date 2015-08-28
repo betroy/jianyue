@@ -13,7 +13,6 @@ public class NetStateBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-            Log.i("Troy", "网络已连接");
         }
     }
 }

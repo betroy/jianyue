@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.troy.jianyue.R;
 import com.troy.jianyue.bean.MenuItem;
-import com.troy.jianyue.util.Appearance;
+import com.troy.jianyue.util.DisplayUtil;
 
 import java.util.List;
 
@@ -28,9 +28,9 @@ public class DrawerLayoutAdapter extends AdapterBase<MenuItem> {
         TextView textView = (TextView) convertView;
         textView.setText(((MenuItem) mList.get(position)).mTitle);
         Drawable drawable=((MenuItem) mList.get(position)).mDrawable;
-        drawable.setBounds(0,0, Appearance.dp2pix(24),Appearance.dp2pix(24));
+        drawable.setBounds(0,0, DisplayUtil.dp2pix(24), DisplayUtil.dp2pix(24));
         textView.setCompoundDrawables(drawable, null, null, null);
-        textView.setCompoundDrawablePadding(Appearance.dp2pix(30));
+        textView.setCompoundDrawablePadding(DisplayUtil.dp2pix(30));
         return convertView;
     }
 }

@@ -20,6 +20,9 @@ import com.avos.avoscloud.FindCallback;
 import com.troy.jianyue.R;
 import com.troy.jianyue.adapter.PictureAdapter;
 import com.troy.jianyue.bean.Picture;
+import com.troy.jianyue.cache.PictureCacheHelper;
+import com.troy.jianyue.json.PictureJSONParser;
+import com.troy.jianyue.util.NetUtil;
 import com.troy.jianyue.util.ToastUtil;
 
 import java.util.ArrayList;
@@ -36,13 +39,14 @@ public class PicturePopularFragment extends BaseFragment {
     private List<Picture> mPictureList = new ArrayList<Picture>();
     private static final int LIMIT = 5;
     private int mSkip = 0;
+    private int mPage = 0;
     private boolean mIsLoading;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState==null)
-        mActionBar.setTitle(mTitles[1]);
+        if (savedInstanceState == null)
+            mActionBar.setTitle(mTitles[1]);
     }
 
     @Nullable
@@ -81,18 +85,26 @@ public class PicturePopularFragment extends BaseFragment {
             }
         });
         mPictureList.clear();
-        requestServer();
+        if (NetUtil.hasNetwork()) {
+            requestServer();
+        } else {
+            loadDataForCache(mPage);
+        }
     }
 
     @Override
     public void loadMoreData() {
         mSkip = mPictureList.size();
         mIsLoading = true;
-        requestServer();
+        if (NetUtil.hasNetwork()) {
+            requestServer();
+        } else {
+            loadDataForCache(mPage);
+        }
     }
 
     @Override
-    public void loadDataForCache() {
+    public void loadDataForCache(int page) {
 
     }
 
@@ -107,8 +119,11 @@ public class PicturePopularFragment extends BaseFragment {
                 mSwipeRefreshLayout.setRefreshing(false);
                 mIsLoading = false;
                 if (e == null) {
+                    ++mPage;
                     mPictureList.addAll(list);
                     mPictureAdapter.notifyDataSetChanged();
+                    Log.i("Troy", "json:" + PictureJSONParser.PictureListToJSON(mPage, list));
+//                    PictureCacheHelper.getInstance().wirteCacheForPage(mPage,);
                 } else {
                     ToastUtil.show("数据加载失败");
                 }

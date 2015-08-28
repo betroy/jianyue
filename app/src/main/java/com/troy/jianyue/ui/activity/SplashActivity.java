@@ -7,7 +7,7 @@ import android.os.CountDownTimer;
 import android.widget.TextView;
 
 import com.troy.jianyue.R;
-import com.troy.jianyue.util.CommonUtil;
+import com.troy.jianyue.util.AppInfoUtil;
 
 /**
  * Created by chenlongfei on 15/4/29.
@@ -19,7 +19,7 @@ public class SplashActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         mTextView=(TextView)findViewById(R.id.activity_splash_version);
-        mTextView.setText("当前版本号:"+ CommonUtil.getAppVersionName());
+        mTextView.setText("当前版本号:"+ AppInfoUtil.getAppVersionName());
         start();
     }
 

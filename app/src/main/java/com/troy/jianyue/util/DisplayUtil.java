@@ -8,7 +8,7 @@ import com.troy.jianyue.base.App;
 /**
  * Created by chenlongfei on 15/5/3.
  */
-public class Appearance {
+public class DisplayUtil {
     private static Context mContext;
     private static Resources mResources;
     private static float mDensity;

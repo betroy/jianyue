@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.IBinder;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -26,7 +25,8 @@ import com.avos.avoscloud.feedback.FeedbackAgent;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.troy.jianyue.R;
 import com.troy.jianyue.service.DownLoadApkService;
-import com.troy.jianyue.util.CommonUtil;
+import com.troy.jianyue.util.AppInfoUtil;
+import com.troy.jianyue.util.NetUtil;
 import com.troy.jianyue.util.ToastUtil;
 
 import java.io.File;
@@ -187,7 +187,7 @@ public class SettingsActivity extends BaseActivity {
                         mUrl = avObject.getAVFile(APK_KEY).getUrl();
                         int versionCode = avObject.getNumber(VERSIONCODE_KEY).intValue();
                         Log.i("Troy", String.format("url:%1$s,versionVode:%2$s", mUrl, versionCode));
-                        if (versionCode > CommonUtil.getAppVersionCode()) {
+                        if (versionCode > AppInfoUtil.getAppVersionCode()) {
                             showUpdateDialog();
                         }
 
@@ -199,7 +199,7 @@ public class SettingsActivity extends BaseActivity {
         private void showAboutDialog() {
             new MaterialDialog.Builder(mSettingsActivity)
                     .title(R.string.app_name)
-                    .content("版本:" + CommonUtil.getAppVersionName() + CommonUtil.getAppVersionCode())
+                    .content("版本:" + AppInfoUtil.getAppVersionName() + AppInfoUtil.getAppVersionCode())
                     .positiveText("确定")
                     .show();
         }
@@ -213,7 +213,7 @@ public class SettingsActivity extends BaseActivity {
             }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (CommonUtil.hasNetwork()) {
+                    if (NetUtil.hasNetwork()) {
                         startService();
                     } else {
                         ToastUtil.show("请检查网络连接");

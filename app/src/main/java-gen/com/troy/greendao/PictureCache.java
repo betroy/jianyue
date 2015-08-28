@@ -8,6 +8,7 @@ public class PictureCache {
 
     private Long id;
     private String result;
+    private Integer page;
 
     public PictureCache() {
     }
@@ -16,9 +17,10 @@ public class PictureCache {
         this.id = id;
     }
 
-    public PictureCache(Long id, String result) {
+    public PictureCache(Long id, String result, Integer page) {
         this.id = id;
         this.result = result;
+        this.page = page;
     }
 
     public Long getId() {
@@ -35,6 +37,14 @@ public class PictureCache {
 
     public void setResult(String result) {
         this.result = result;
+    }
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
     }
 
 }

@@ -1,19 +1,11 @@
 package com.troy.jianyue.ui.activity;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.FrameLayout;
 
 import com.troy.jianyue.R;
-import com.troy.jianyue.util.Appearance;
 
 /**
  * Created by chenlongfei on 15/5/10.

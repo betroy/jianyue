@@ -98,7 +98,7 @@ public class VideoPopularFragment extends BaseFragment {
     }
 
     @Override
-    public void loadDataForCache() {
+    public void loadDataForCache(int page) {
 
     }
 

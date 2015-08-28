@@ -2,7 +2,6 @@ package com.troy.jianyue.ui.activity;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
@@ -12,7 +11,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.troy.jianyue.R;
-import com.troy.jianyue.util.Appearance;
+import com.troy.jianyue.util.DisplayUtil;
 
 /**
  * Created by chenlongfei on 15/4/30.
@@ -38,12 +37,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             FrameLayout.LayoutParams layoutParams;
             if (rootView.getChildCount() > 1 && (statusBarBg = rootView.getChildAt(1)) != null && statusBarBg.getId() == R.id.startus_bar_bg) {
                 layoutParams = (FrameLayout.LayoutParams) statusBarBg.getLayoutParams();
-                layoutParams.height = Appearance.getStatusBarHeight();
+                layoutParams.height = DisplayUtil.getStatusBarHeight();
                 layoutParams.gravity = Gravity.TOP;
                 statusBarBg.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                 statusBarBg.setLayoutParams(layoutParams);
             } else {
-                layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, Appearance.getStatusBarHeight());
+                layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, DisplayUtil.getStatusBarHeight());
                 layoutParams.gravity = Gravity.TOP;
                 statusBarBg = new View(this);
                 statusBarBg.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));

@@ -21,5 +21,6 @@ public class JianyueDaoGenerator {
         Entity entity = schema.addEntity(className);
         entity.addIdProperty().primaryKey().autoincrement();
         entity.addStringProperty("result");
+        entity.addIntProperty("page");
     }
 }

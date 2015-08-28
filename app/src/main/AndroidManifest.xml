@@ -48,6 +48,7 @@
             android:screenOrientation="portrait"></activity>
 
         <service android:name=".service.DownLoadApkService"></service>
+        <receiver android:name=".receiver.NetStateBroadcastReceiver"></receiver>
     </application>
 
 </manifest>

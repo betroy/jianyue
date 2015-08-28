@@ -47,5 +47,5 @@ public abstract class BaseFragment extends Fragment implements SwipeRefreshLayou
 
     public abstract void addListener();
 
-    public abstract void loadDataForCache();
+    public abstract void loadDataForCache(int page);
 }

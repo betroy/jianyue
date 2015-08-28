@@ -10,14 +10,8 @@ import com.troy.jianyue.base.App;
 /**
  * Created by chenlongfei on 15/5/9.
  */
-public class CommonUtil {
+public class AppInfoUtil {
     public static Context mContext = App.mContext;
-
-    public static boolean hasNetwork() {
-        ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo info = cm.getActiveNetworkInfo();
-        return info != null && info.isConnectedOrConnecting();
-    }
 
     public static String getAppVersionName() {
         PackageManager pm = mContext.getPackageManager();

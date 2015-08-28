@@ -7,12 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 
 import com.thinkland.sdk.android.DataCallBack;
 import com.thinkland.sdk.android.JuheData;
@@ -20,8 +17,10 @@ import com.thinkland.sdk.android.Parameters;
 import com.troy.jianyue.R;
 import com.troy.jianyue.adapter.WeiXinAdapter;
 import com.troy.jianyue.bean.WeiXin;
+import com.troy.jianyue.cache.WeiXinCacheHelper;
+import com.troy.jianyue.json.WeiXinJSONParser;
 import com.troy.jianyue.ui.activity.WeiXinDetailActivity;
-import com.troy.jianyue.util.GsonUtil;
+import com.troy.jianyue.util.NetUtil;
 import com.troy.jianyue.util.ToastUtil;
 
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ import java.util.List;
  * Created by chenlongfei on 15/5/8.
  */
 public class WeiXinPopularFragment extends BaseFragment {
-    private static final String URL = "http://v.juhe.cn/weixin/query?key=03c88d230bd2586bcad08acee6de402a&dtype=json&pno=%1$d&ps=%2$d";
     private static final int JUHE_DATA_ID = 147;
     private static final String JUHE_API_URL = "http://v.juhe.cn/weixin/query";
     private RecyclerView mRecyclerView;
@@ -42,6 +40,8 @@ public class WeiXinPopularFragment extends BaseFragment {
     private static final int PS = 6;  //每页item数量
     private static final int PNO = 1;  //第几页
     private boolean mIsLoading = false;
+    private int mTotalPage;
+    private int mCurrentPage;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,43 +79,65 @@ public class WeiXinPopularFragment extends BaseFragment {
 
     @Override
     public void loadData() {
+        mListWeiXin.clear();
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
                 mSwipeRefreshLayout.setRefreshing(true);
             }
         });
-        mListWeiXin.clear();
-        requestServer(URL, PNO, PS);
+        if (NetUtil.hasNetwork()) {
+            WeiXinCacheHelper.getInstance().cleanAllCache();
+            requestServer(PNO, PS);
+        } else {
+            loadDataForCache(PNO);
+        }
     }
 
     @Override
     public void loadMoreData() {
-        int pno = GsonUtil.getPno();
-        int totalPage = GsonUtil.getTotalPage();
+        int pno = mCurrentPage;
+        int totalPage = mTotalPage;
         if (pno < totalPage) {
-            requestServer(URL, ++pno, PS);
+            if (NetUtil.hasNetwork()) {
+                requestServer(++pno, PS);
+            } else {
+                loadDataForCache(++pno);
+            }
         }
         mIsLoading = true;
     }
 
     @Override
-    public void loadDataForCache() {
+    public void loadDataForCache(int page) {
+        List<WeiXin> weiXinList = WeiXinCacheHelper.getInstance().readCacheForPage(page);
+        mListWeiXin.addAll(weiXinList);
+        mWeiXinAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(false);
+                mIsLoading = false;
+            }
+        });
     }
 
-    public void requestServer(String url, int pno, int ps) {
+    public void requestServer(final int pno, int ps) {
         Parameters param = new Parameters();
         param.add("pno", pno);
         param.add("ps", ps);
         JuheData.executeWithAPI(getActivity(), JUHE_DATA_ID, JUHE_API_URL, JuheData.GET, param, new DataCallBack() {
             @Override
             public void onSuccess(int statusCode, String responseString) {
-                if (GsonUtil.getErrorCode(responseString) == 0) {
-                    List<WeiXin> weiXinList = GsonUtil.jsonToWeiXinList(responseString);
-                    mListWeiXin.addAll(weiXinList);
+                WeiXinJSONParser weiXinJSONParser = new WeiXinJSONParser(responseString);
+                if (weiXinJSONParser.getErrorCode() == 0) {
+                    mCurrentPage = weiXinJSONParser.getPno();
+                    mTotalPage = weiXinJSONParser.getTotalPage();
+                    WeiXinCacheHelper.getInstance().wirteCacheForPage(pno, responseString);
+                    mListWeiXin.addAll(weiXinJSONParser.getWeiXinList());
                     mWeiXinAdapter.notifyDataSetChanged();
                 } else {
-                    ToastUtil.show(GsonUtil.getReason(responseString));
+                    ToastUtil.show(weiXinJSONParser.getReason());
                 }
             }
 
@@ -163,6 +185,7 @@ public class WeiXinPopularFragment extends BaseFragment {
             }
         });
     }
+
 
     @Override
     public void onRefresh() {

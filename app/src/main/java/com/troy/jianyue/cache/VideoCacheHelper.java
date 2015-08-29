@@ -1,8 +1,11 @@
 package com.troy.jianyue.cache;
 
+import android.util.Log;
+
 import com.troy.greendao.VideoCache;
 import com.troy.greendao.VideoCacheDao;
 import com.troy.jianyue.bean.Video;
+import com.troy.jianyue.json.VideoJSONParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +42,8 @@ public class VideoCacheHelper extends BaseCacheHelper<Video> {
         List<Video> videoList = null;
         if (queryBuilder.list().size() > 0) {
             String result = queryBuilder.list().get(0).getResult();
+            VideoJSONParser videoJSONParser = new VideoJSONParser();
+            videoList = videoJSONParser.jsonToVideoList(result);
         } else {
             videoList = new ArrayList<Video>();
         }

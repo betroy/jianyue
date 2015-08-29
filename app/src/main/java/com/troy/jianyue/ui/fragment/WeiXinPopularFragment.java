@@ -91,6 +91,12 @@ public class WeiXinPopularFragment extends BaseFragment {
             requestServer(PNO, PS);
         } else {
             loadDataForCache(PNO);
+            mSwipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            });
         }
     }
 
@@ -105,7 +111,6 @@ public class WeiXinPopularFragment extends BaseFragment {
                 loadDataForCache(++pno);
             }
         }
-        mIsLoading = true;
     }
 
     @Override
@@ -113,13 +118,7 @@ public class WeiXinPopularFragment extends BaseFragment {
         List<WeiXin> weiXinList = WeiXinCacheHelper.getInstance().readCacheForPage(page);
         mListWeiXin.addAll(weiXinList);
         mWeiXinAdapter.notifyDataSetChanged();
-        mSwipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mSwipeRefreshLayout.setRefreshing(false);
-                mIsLoading = false;
-            }
-        });
+        mIsLoading = false;
     }
 
     public void requestServer(final int pno, int ps) {
@@ -179,6 +178,7 @@ public class WeiXinPopularFragment extends BaseFragment {
 //                Log.i("Troy", String.format("lastPosition:%1$d,totalItem:%2$d,firstPosition:%3$d", lastVisiblePosition, totalItem, firstVisiblePosition));
                 if (dy > 0) {
                     if (lastVisiblePosition == mListWeiXin.size() && !mIsLoading) {
+                        mIsLoading = true;
                         loadMoreData();
                     }
                 }

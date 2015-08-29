@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
 import com.troy.jianyue.R;
 import com.troy.jianyue.adapter.PictureAdapter;
@@ -39,7 +40,7 @@ public class PicturePopularFragment extends BaseFragment {
     private List<Picture> mPictureList = new ArrayList<Picture>();
     private static final int LIMIT = 5;
     private int mSkip = 0;
-    private int mPage = 0;
+    private int mPage = 1;
     private boolean mIsLoading;
 
     @Override
@@ -86,16 +87,23 @@ public class PicturePopularFragment extends BaseFragment {
         });
         mPictureList.clear();
         if (NetUtil.hasNetwork()) {
+            PictureCacheHelper.getInstance().cleanAllCache();
             requestServer();
         } else {
             loadDataForCache(mPage);
+            mSwipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            });
         }
     }
 
     @Override
     public void loadMoreData() {
+        ++mPage;
         mSkip = mPictureList.size();
-        mIsLoading = true;
         if (NetUtil.hasNetwork()) {
             requestServer();
         } else {
@@ -105,7 +113,10 @@ public class PicturePopularFragment extends BaseFragment {
 
     @Override
     public void loadDataForCache(int page) {
-
+        List<Picture> pictureList = PictureCacheHelper.getInstance().readCacheForPage(page);
+        mPictureList.addAll(pictureList);
+        mPictureAdapter.notifyDataSetChanged();
+        mIsLoading = false;
     }
 
     private void requestServer() {
@@ -119,11 +130,12 @@ public class PicturePopularFragment extends BaseFragment {
                 mSwipeRefreshLayout.setRefreshing(false);
                 mIsLoading = false;
                 if (e == null) {
-                    ++mPage;
-                    mPictureList.addAll(list);
-                    mPictureAdapter.notifyDataSetChanged();
-                    Log.i("Troy", "json:" + PictureJSONParser.PictureListToJSON(mPage, list));
-//                    PictureCacheHelper.getInstance().wirteCacheForPage(mPage,);
+                    if (list.size() > 0) {
+                        mPictureList.addAll(list);
+                        mPictureAdapter.notifyDataSetChanged();
+                        PictureJSONParser pictureJSONParser = new PictureJSONParser();
+                        PictureCacheHelper.getInstance().wirteCacheForPage(mPage, pictureJSONParser.PictureListToJSON(list));
+                    }
                 } else {
                     ToastUtil.show("数据加载失败");
                 }
@@ -144,6 +156,7 @@ public class PicturePopularFragment extends BaseFragment {
                 int totalItem = mLinearLayoutManager.getItemCount();
                 if (dy > 0) {
                     if (lastVisibleItemPosition == mPictureList.size() && !mIsLoading) {
+                        mIsLoading = true;
                         loadMoreData();
                     }
                 }

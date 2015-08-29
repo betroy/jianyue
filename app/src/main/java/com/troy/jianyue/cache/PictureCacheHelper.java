@@ -3,6 +3,8 @@ package com.troy.jianyue.cache;
 import com.troy.greendao.PictureCache;
 import com.troy.greendao.PictureCacheDao;
 import com.troy.jianyue.bean.Picture;
+import com.troy.jianyue.json.PictureJSONParser;
+import com.troy.jianyue.json.WeiXinJSONParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,8 @@ public class PictureCacheHelper extends BaseCacheHelper<Picture> {
         List<Picture> pictureList = null;
         if (queryBuilder.list().size() > 0) {
             String result = queryBuilder.list().get(0).getResult();
+            PictureJSONParser pictureJSONParser=new PictureJSONParser();
+            pictureList=pictureJSONParser.jsonToPictureList(result);
         } else {
             pictureList = new ArrayList<Picture>();
         }

@@ -10,17 +10,29 @@ import com.avos.avoscloud.AVObject;
 public class Video extends AVObject {
     private String videoUrl;
     private String summary;
-    private String thumbnails;
+    private String thumbnailsUrl;
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
 
     public String getVideoUrl() {
-        return getString("videoUrl");
+        return videoUrl == null ? getString("videoUrl") : videoUrl;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
     public String getSummary() {
-        return getString("summary");
+        return summary == null ? getString("summary") : summary;
+    }
+
+    public void setThumbnailsUrl(String thumbnailsUrl) {
+        this.thumbnailsUrl = thumbnailsUrl;
     }
 
     public String getThumbnailsUrl() {
-        return getAVFile("thumbnails").getUrl();
+        return thumbnailsUrl == null ? getAVFile("thumbnailsUrl").getUrl() : thumbnailsUrl;
     }
 }

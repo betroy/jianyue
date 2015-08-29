@@ -17,10 +17,14 @@ import android.widget.TextView;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.CountCallback;
 import com.avos.avoscloud.FindCallback;
 import com.troy.jianyue.R;
 import com.troy.jianyue.adapter.VideoAdapter;
 import com.troy.jianyue.bean.Video;
+import com.troy.jianyue.cache.VideoCacheHelper;
+import com.troy.jianyue.json.VideoJSONParser;
+import com.troy.jianyue.util.NetUtil;
 import com.troy.jianyue.util.ToastUtil;
 
 import java.util.ArrayList;
@@ -38,12 +42,13 @@ public class VideoPopularFragment extends BaseFragment {
     private boolean mIsLoading;
     private static final int LIMIT = 10;
     private int mSkip = 0;
+    private int mPage = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState==null)
-        mActionBar.setTitle(mTitles[2]);
+        if (savedInstanceState == null)
+            mActionBar.setTitle(mTitles[2]);
     }
 
     @Nullable
@@ -98,18 +103,6 @@ public class VideoPopularFragment extends BaseFragment {
     }
 
     @Override
-    public void loadDataForCache(int page) {
-
-    }
-
-    @Override
-    public void loadMoreData() {
-        mSkip = mVideoList.size();
-        mIsLoading = true;
-        requestServer();
-    }
-
-    @Override
     public void loadData() {
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
@@ -118,7 +111,38 @@ public class VideoPopularFragment extends BaseFragment {
             }
         });
         mVideoList.clear();
-        requestServer();
+        if (NetUtil.hasNetwork()) {
+            VideoCacheHelper.getInstance().cleanAllCache();
+            requestServer();
+        } else {
+            loadDataForCache(mPage);
+            mSwipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void loadMoreData() {
+        ++mPage;
+        mSkip = mVideoList.size();
+        if (NetUtil.hasNetwork()) {
+            requestServer();
+        } else {
+            loadDataForCache(mPage);
+        }
+
+    }
+
+    @Override
+    public void loadDataForCache(int page) {
+        List<Video> videoList = VideoCacheHelper.getInstance().readCacheForPage(page);
+        mVideoList.addAll(videoList);
+        mVideoAdapter.notifyDataSetChanged();
+        mIsLoading = false;
     }
 
     public void requestServer() {
@@ -132,14 +156,17 @@ public class VideoPopularFragment extends BaseFragment {
                 mSwipeRefreshLayout.setRefreshing(false);
                 mIsLoading = false;
                 if (e == null) {
-                    mVideoList.addAll(list);
-                    mVideoAdapter.notifyDataSetChanged();
+                    if (list.size() > 0) {
+                        mVideoList.addAll(list);
+                        mVideoAdapter.notifyDataSetChanged();
+                        VideoJSONParser videoJSONParser = new VideoJSONParser();
+                        VideoCacheHelper.getInstance().wirteCacheForPage(mPage, videoJSONParser.videoListToJSON(mVideoList));
+                    }
                 } else {
                     ToastUtil.show("数据加载失败...");
                 }
             }
         });
-
     }
 
     @Override

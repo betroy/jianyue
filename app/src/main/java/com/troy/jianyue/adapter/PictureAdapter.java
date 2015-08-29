@@ -48,7 +48,7 @@ public class PictureAdapter extends BaseAdapterRecyclerView<PictureAdapter.ViewH
     public void onBindViewHolder(ViewHolder holder, int position) {
         if (position < mPictureList.size()) {
             holder.mSummary.setText(mPictureList.get(position).getSummary());
-            mImageLoader.displayImage(mPictureList.get(position).getUrl(), holder.mPicture);
+            mImageLoader.displayImage(mPictureList.get(position).getImageUrl(), holder.mPicture);
         } else {
             //数据全部加载完毕，提示”没有更多了...”,否则提示"正在加载..."
             if (mLastItemCount == mPictureList.size()) {

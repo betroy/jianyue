@@ -1,5 +1,8 @@
 package com.troy.jianyue.json;
 
+import android.util.Log;
+
+import com.baidu.cyberplayer.utils.J;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -16,26 +19,38 @@ import java.util.List;
 public class PictureJSONParser {
     private Gson mGson;
     private JsonObject mJsonObject;
+    private JsonParser mJsonParser;
 
-    public PictureJSONParser(String json) {
+    public PictureJSONParser() {
         mGson = new Gson();
-        JsonParser jsonParser = new JsonParser();
-        JsonElement jsonElement = jsonParser.parse(json);
-        mJsonObject = jsonElement.getAsJsonObject();
+        mJsonParser = new JsonParser();
     }
 
     public List<Picture> jsonToPictureList(String json) {
-        return new ArrayList<Picture>();
+        JsonElement jsonElement = mJsonParser.parse(json);
+        JsonArray jsonArray = jsonElement.getAsJsonArray();
+        List<Picture> pictureList = new ArrayList<Picture>();
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JsonObject jsonObject=jsonArray.get(i).getAsJsonObject();
+            String imageUrl=jsonObject.get("imageUrl").getAsString();
+            String summary=jsonObject.get("summary").getAsString();
+            Picture picture = new Picture();
+            picture.setImageUrl(imageUrl);
+            picture.setSummary(summary);
+            pictureList.add(picture);
+        }
+        return pictureList;
     }
 
-    public String PictureListToJSON(int page, List<Picture> pictures) {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("currentPage", page);
-        JsonArray jsonArray = mGson.toJsonTree(pictures).getAsJsonArray();
-        JsonObject list = new JsonObject();
-        list.add("list", jsonArray);
-        jsonObject.add("result", list);
-        return jsonObject.toString();
+    public String PictureListToJSON(List<Picture> pictures) {
+        List<Picture> pictureList = new ArrayList<Picture>();
+        for (Picture picture : pictures) {
+            Picture newPicture = new Picture();
+            newPicture.setImageUrl(picture.getImageUrl());
+            newPicture.setSummary(picture.getSummary());
+            pictureList.add(newPicture);
+        }
+        return mGson.toJson(pictureList);
     }
 
 }

@@ -3,9 +3,11 @@ package com.troy.jianyue.ui.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -20,7 +22,7 @@ import java.util.Locale;
 /**
  * Created by chenlongfei on 15/8/26.
  */
-public class VideoDetailActivity extends BaseActivity {
+public class VideoDetailActivity extends AppCompatActivity {
     private static final int UPDATE_TIME_PROGRESS_MESSAGE = 0;
     private static final int UPDATE_UI_MPROGRESSCONTROLLER_VISIBLE = 1;
     private static final int UPDATE_UI_MPROGRESSCONTROLLER_GONE_DELAY = 2;
@@ -42,12 +44,12 @@ public class VideoDetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_detail);
         mVideoUrl = getIntent().getExtras().getString("url");
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         initViews();
         setupPlayer();
         addListener();
     }
 
-    @Override
     protected void initViews() {
         mBVideoView = (BVideoView) findViewById(R.id.activity_video_detail_videoview);
         mPlayOrPause = (Button) findViewById(R.id.activity_video_detail_btn_play);
@@ -58,11 +60,6 @@ public class VideoDetailActivity extends BaseActivity {
         mTotalTime = (TextView) findViewById(R.id.activity_video_detail_time_total);
         mProgressController = (LinearLayout) findViewById(R.id.activity_video_detail_progress_control);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.activity_video_detail_media_controller);
-    }
-
-    @Override
-    protected void initData() {
-
     }
 
     public void setupPlayer() {

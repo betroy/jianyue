@@ -42,7 +42,7 @@
             android:screenOrientation="portrait"></activity>
         <activity
             android:name=".ui.activity.VideoDetailActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="landscape"></activity>
         <activity
             android:name="com.avos.avoscloud.feedback.ThreadActivity"
             android:screenOrientation="portrait"></activity>
